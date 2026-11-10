@@ -87,6 +87,9 @@ gemini
 | `gemini-3.1-pro` | 高级数学与代码 (需 cookie) | ~1.2万字 |
 | `gemini-auto` | 自动选择模型 | 不定 |
 | `gemini-flash-lite` | 最快响应, 轻量 | ~1万字 |
+| `gemini-3.5-flash-lite` | `gemini-flash-lite` 的别名 | ~1万字 |
+
+Python 服务实验性支持 `gemini-4-argon`（低）、`gemini-4-argon-thinking-medium`（中）和 `gemini-4-argon-thinking`（高），通过新版 `processSession` 协议请求，需在 `cookie_file` 配置有 Argon 权限的账号 Cookie（包含 SAPISID）。图片输入暂不支持；Cloudflare Worker 尚不支持 Argon。为防止静默降级，服务会等待上游报告模型名称，无法确认 Argon 时返回错误，流式输出也可能因此延迟。低档已用真实账号完成一次请求，但也出现过超时；中、高档仍需真实账号验证。下面的 `@think=N` 是旧协议参数，不能用于 Argon。
 
 ### 思考深度
 

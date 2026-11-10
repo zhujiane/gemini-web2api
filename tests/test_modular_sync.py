@@ -8,6 +8,7 @@ from urllib.parse import parse_qs
 
 from gemini_web2api.config import CONFIG, DEFAULT_CONFIG
 from gemini_web2api.gemini import _build_payload
+from gemini_web2api.models import resolve_model
 from gemini_web2api.server import GeminiHandler, ThreadedServer
 from gemini_web2api.tools import google_contents_to_prompt, messages_to_prompt
 
@@ -32,6 +33,17 @@ def _decode_sse(body):
         if event_type and data:
             events.append((event_type, json.loads(data)))
     return events
+
+
+class ModelCompatibilityTests(unittest.TestCase):
+    def test_flash_lite_versioned_alias_uses_lite_mode(self):
+        self.assertEqual(resolve_model("gemini-3.5-flash-lite")[1:4], (6, 4, None))
+
+    def test_argon_thinking_levels_and_legacy_override(self):
+        for model, level in (("gemini-4-argon", 1), ("gemini-4-argon-thinking-medium", 4), ("gemini-4-argon-thinking", 2)):
+            with self.subTest(model=model):
+                self.assertEqual(resolve_model(model)[1:4], (8, level, None))
+        self.assertIn("legacy", resolve_model("gemini-4-argon@think=2")[3])
 
 
 class PayloadPersistenceTests(unittest.TestCase):

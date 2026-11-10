@@ -97,6 +97,9 @@ Supports Google native API endpoints:
 | `gemini-3.1-pro` | Advanced math & code (needs cookie) | ~12k chars |
 | `gemini-auto` | Auto model selection | varies |
 | `gemini-flash-lite` | Fastest answers, lightweight | ~10k chars |
+| `gemini-3.5-flash-lite` | Alias for `gemini-flash-lite` | ~10k chars |
+
+The Python server experimentally supports `gemini-4-argon` (low), `gemini-4-argon-thinking-medium` (medium), and `gemini-4-argon-thinking` (high) using `processSession`. Configure `cookie_file` with an Argon-enabled account cookie containing SAPISID. Image input and the Cloudflare Worker do not yet support Argon. To prevent silent downgrades the server waits for an upstream model label and errors if it cannot confirm Argon; this may delay streamed output. One real-account request at the low level succeeded, but another timed out; medium and high levels have not yet been verified with a real account. The legacy `@think=N` parameter below does not apply to Argon.
 
 ### Thinking Depth
 

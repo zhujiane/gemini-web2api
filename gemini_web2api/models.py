@@ -4,6 +4,18 @@
 #   1=FAST, 2=THINKING, 3=PRO, 4=AUTO, 5=FAST_DYNAMIC_THINKING, 6=FLASH_LITE
 
 MODELS = {
+    "gemini-4-argon": {
+        "mode": 8, "think": 1,
+        "desc": "Gemini 4 Argon, low thinking (experimental, requires cookie)",
+    },
+    "gemini-4-argon-thinking-medium": {
+        "mode": 8, "think": 4,
+        "desc": "Gemini 4 Argon, medium thinking (experimental, requires cookie)",
+    },
+    "gemini-4-argon-thinking": {
+        "mode": 8, "think": 2,
+        "desc": "Gemini 4 Argon, high thinking (experimental, requires cookie)",
+    },
     "gemini-3.8-flash": {
         "mode": 1, "think": 4,
         "desc": "Latest all-around model (Gemini 3.8 Flash)",
@@ -44,6 +56,10 @@ MODELS = {
         "mode": 6, "think": 4,
         "desc": "Lightweight fast model",
     },
+    "gemini-3.5-flash-lite": {
+        "mode": 6, "think": 4,
+        "desc": "Alias for gemini-flash-lite",
+    },
 }
 
 
@@ -62,11 +78,15 @@ def resolve_model(model_name: str, default: str = "gemini-3.6-flash"):
             return None, None, None, f"Invalid think level: {think_str}", None
     cfg = MODELS.get(model_name)
     if not cfg:
+        if model_name.startswith("gemini-4-argon"):
+            return None, None, None, "Unknown Gemini 4 Argon variant", None
         from .gemini import log
         log(f"Unknown model '{model_name}', falling back to '{default}'")
         model_name = default
         cfg = MODELS[default]
     mode_id = cfg["mode"]
     think_mode = think_override if think_override is not None else cfg["think"]
+    if mode_id == 8 and think_override is not None:
+        return None, None, None, "Use the Argon model names to select a thinking level; @think is a legacy parameter", None
     extra = cfg.get("extra")
     return model_name, mode_id, think_mode, None, extra

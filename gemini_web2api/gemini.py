@@ -204,6 +204,9 @@ def extract_response_text(raw: str) -> str:
 
 def generate(prompt: str, model_id: int, think_mode: int, file_refs: list = None, extra_fields: dict = None) -> str:
     """Non-streaming generation with retry."""
+    if model_id == 8:
+        from .webchannel import generate_argon
+        return "".join(generate_argon(prompt, think_mode, file_refs))
     body = _build_payload(prompt, model_id, think_mode, file_refs, extra_fields).encode()
     url = _get_url()
     headers = _build_headers()
@@ -234,6 +237,10 @@ def generate(prompt: str, model_id: int, think_mode: int, file_refs: list = None
 
 def generate_stream(prompt: str, model_id: int, think_mode: int, file_refs: list = None, extra_fields: dict = None):
     """Streaming generation via httpx with retry on connection failure."""
+    if model_id == 8:
+        from .webchannel import generate_argon
+        yield from generate_argon(prompt, think_mode, file_refs)
+        return
     if not HAS_HTTPX:
         text = generate(prompt, model_id, think_mode, file_refs, extra_fields)
         if text:

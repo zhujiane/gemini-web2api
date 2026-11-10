@@ -485,6 +485,11 @@ var MODELS = {
     think: 4,       // AUTO
     desc: 'Lightweight fast model',
   },
+  'gemini-3.5-flash-lite': {
+    mode: 6,
+    think: 4,
+    desc: 'Alias for gemini-flash-lite',
+  },
 };
 
 // ============================================================================
